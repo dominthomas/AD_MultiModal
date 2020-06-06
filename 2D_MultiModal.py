@@ -396,12 +396,11 @@ model.compile(loss=tf.keras.losses.binary_crossentropy,
 
 model.fit([train_s, train_c, train_a],
           train_labels,
-          epochs=50,
+          epochs=20,
           batch_size=120,
           shuffle=True)
 #################################################
 
 gc.collect()
-
 evaluation = model.evaluate([test_s, test_c, test_a], test_labels, verbose=0)
 print(evaluation)
