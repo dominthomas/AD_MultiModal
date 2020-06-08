@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f8c50649-df63-461f-9e4f-9c18e6a345fe" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gpu_farm/2D_MultiInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_farm/2D_MultiInput.py" afterDir="false" />
-    </list>
+    <list default="true" id="f8c50649-df63-461f-9e4f-9c18e6a345fe" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

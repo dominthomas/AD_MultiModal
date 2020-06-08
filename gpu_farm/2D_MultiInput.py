@@ -23,7 +23,6 @@ import matplotlib.image as mpimg
 gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
-gpus = None
 
 
 def crop(img, tol=0):
