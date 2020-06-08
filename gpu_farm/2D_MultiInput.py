@@ -425,7 +425,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     model.fit([train_s, train_c, train_a],
               train_labels,
               epochs=50,
-              batch_size=120,
+              batch_size=512,
               shuffle=True)
     #################################################
 
