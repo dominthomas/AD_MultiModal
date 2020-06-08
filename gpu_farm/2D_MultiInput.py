@@ -244,7 +244,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     #################################################
 
     with tf.device("/cpu:0"):
-        with tf.device("/gpu:0"):
+        with tf.device("/gpu:1"):
             input_s = Input(shape=(227, 227, 1))
 
             c1 = Conv2D(32,
@@ -299,7 +299,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
             flat1 = Flatten()(mp3)
 
-        with tf.device("/gpu:1"):
+        with tf.device("/gpu:2"):
             input_c = Input(shape=(227, 227, 1))
 
             c1_c = Conv2D(32,
@@ -354,7 +354,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
             flat2 = Flatten()(mp3_c)
 
-        with tf.device("/gpu:2"):
+        with tf.device("/gpu:3"):
             input_a = Input(shape=(227, 227, 1))
 
             c1_a = Conv2D(32,
@@ -368,7 +368,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
             mp1_a = MaxPooling2D(pool_size=(2, 2),
                                  strides=(2, 2),
                                  padding='valid')(c1_a)
-        with tf.device("/gpu:3"):
+        with tf.device("/gpu:4"):
             c2_a = Conv2D(64,
                           kernel_size=(5, 5),
                           strides=(1, 1),
@@ -409,7 +409,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
             flat3 = Flatten()(mp3_a)
 
-        with tf.device("/gpu:4"):
+        with tf.device("/gpu:0"):
             merge = concatenate([flat1, flat2, flat3])
             h1 = Dense(32, activation='relu')(merge)
             output = Dense(1, activation='sigmoid')(h1)
