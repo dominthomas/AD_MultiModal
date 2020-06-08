@@ -242,176 +242,174 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
     #################################################
 
-    with tf.device("/cpu:0"):
-        with tf.device("/gpu:1"):
-            input_s = Input(shape=(227, 227, 1))
+    input_s = Input(shape=(227, 227, 1))
 
-            c1 = Conv2D(32,
-                        input_shape=(227, 227, 1),
-                        data_format='channels_last',
-                        kernel_size=(7, 7),
-                        strides=(4, 4),
-                        padding='valid',
-                        activation='relu')(input_s)
+    c1 = Conv2D(32,
+                input_shape=(227, 227, 1),
+                data_format='channels_last',
+                kernel_size=(7, 7),
+                strides=(4, 4),
+                padding='valid',
+                activation='relu')(input_s)
 
-            mp1 = MaxPooling2D(pool_size=(2, 2),
-                               strides=(2, 2),
-                               padding='valid')(c1)
+    mp1 = MaxPooling2D(pool_size=(2, 2),
+                       strides=(2, 2),
+                       padding='valid')(c1)
 
-            c2 = Conv2D(64,
-                        kernel_size=(5, 5),
-                        strides=(1, 1),
-                        padding='valid',
-                        activation='relu')(mp1)
+    c2 = Conv2D(64,
+                kernel_size=(5, 5),
+                strides=(1, 1),
+                padding='valid',
+                activation='relu')(mp1)
 
-            mp2 = MaxPooling2D(pool_size=(2, 2),
-                               strides=(2, 2),
-                               padding='valid')(c2)
+    mp2 = MaxPooling2D(pool_size=(2, 2),
+                       strides=(2, 2),
+                       padding='valid')(c2)
 
-            c3 = Conv2D(384,
-                        kernel_size=(3, 3),
-                        strides=(1, 1),
-                        padding='valid',
-                        activation='relu')(mp2)
+    c3 = Conv2D(384,
+                kernel_size=(3, 3),
+                strides=(1, 1),
+                padding='valid',
+                activation='relu')(mp2)
 
-            c4 = Conv2D(384,
-                        kernel_size=(3, 3),
-                        strides=(1, 1),
-                        padding='valid',
-                        activation='relu')(c3)
+    c4 = Conv2D(384,
+                kernel_size=(3, 3),
+                strides=(1, 1),
+                padding='valid',
+                activation='relu')(c3)
 
-            c5 = Conv2D(512,
-                        kernel_size=(3, 3),
-                        strides=(1, 1),
-                        padding='valid',
-                        activation='relu')(c4)
+    c5 = Conv2D(512,
+                kernel_size=(3, 3),
+                strides=(1, 1),
+                padding='valid',
+                activation='relu')(c4)
 
-            c6 = Conv2D(256,
-                        kernel_size=(3, 3),
-                        strides=(1, 1),
-                        padding='valid',
-                        activation='relu')(c5)
+    c6 = Conv2D(256,
+                kernel_size=(3, 3),
+                strides=(1, 1),
+                padding='valid',
+                activation='relu')(c5)
 
-            mp3 = MaxPooling2D(pool_size=(2, 2),
-                               strides=(2, 2),
-                               padding='valid')(c6)
+    mp3 = MaxPooling2D(pool_size=(2, 2),
+                       strides=(2, 2),
+                       padding='valid')(c6)
 
-            flat1 = Flatten()(mp3)
+    flat1 = Flatten()(mp3)
 
-        with tf.device("/gpu:2"):
-            input_c = Input(shape=(227, 227, 1))
+    input_c = Input(shape=(227, 227, 1))
 
-            c1_c = Conv2D(32,
-                          input_shape=(227, 227, 1),
-                          data_format='channels_last',
-                          kernel_size=(7, 7),
-                          strides=(4, 4),
-                          padding='valid',
-                          activation='relu')(input_c)
+    c1_c = Conv2D(32,
+                  input_shape=(227, 227, 1),
+                  data_format='channels_last',
+                  kernel_size=(7, 7),
+                  strides=(4, 4),
+                  padding='valid',
+                  activation='relu')(input_c)
 
-            mp1_c = MaxPooling2D(pool_size=(2, 2),
-                                 strides=(2, 2),
-                                 padding='valid')(c1_c)
+    mp1_c = MaxPooling2D(pool_size=(2, 2),
+                         strides=(2, 2),
+                         padding='valid')(c1_c)
 
-            c2_c = Conv2D(64,
-                          kernel_size=(5, 5),
-                          strides=(1, 1),
-                          padding='valid',
-                          activation='relu')(mp1_c)
+    c2_c = Conv2D(64,
+                  kernel_size=(5, 5),
+                  strides=(1, 1),
+                  padding='valid',
+                  activation='relu')(mp1_c)
 
-            mp2_c = MaxPooling2D(pool_size=(2, 2),
-                                 strides=(2, 2),
-                                 padding='valid')(c2_c)
+    mp2_c = MaxPooling2D(pool_size=(2, 2),
+                         strides=(2, 2),
+                         padding='valid')(c2_c)
 
-            c3_c = Conv2D(384,
-                          kernel_size=(3, 3),
-                          strides=(1, 1),
-                          padding='valid',
-                          activation='relu')(mp2_c)
+    c3_c = Conv2D(384,
+                  kernel_size=(3, 3),
+                  strides=(1, 1),
+                  padding='valid',
+                  activation='relu')(mp2_c)
 
-            c4_c = Conv2D(384,
-                          kernel_size=(3, 3),
-                          strides=(1, 1),
-                          padding='valid',
-                          activation='relu')(c3_c)
+    c4_c = Conv2D(384,
+                  kernel_size=(3, 3),
+                  strides=(1, 1),
+                  padding='valid',
+                  activation='relu')(c3_c)
 
-            c5_c = Conv2D(512,
-                          kernel_size=(3, 3),
-                          strides=(1, 1),
-                          padding='valid',
-                          activation='relu')(c4_c)
+    c5_c = Conv2D(512,
+                  kernel_size=(3, 3),
+                  strides=(1, 1),
+                  padding='valid',
+                  activation='relu')(c4_c)
 
-            c6_c = Conv2D(256,
-                          kernel_size=(3, 3),
-                          strides=(1, 1),
-                          padding='valid',
-                          activation='relu')(c5_c)
+    c6_c = Conv2D(256,
+                  kernel_size=(3, 3),
+                  strides=(1, 1),
+                  padding='valid',
+                  activation='relu')(c5_c)
 
-            mp3_c = MaxPooling2D(pool_size=(2, 2),
-                                 strides=(2, 2),
-                                 padding='valid')(c6_c)
+    mp3_c = MaxPooling2D(pool_size=(2, 2),
+                         strides=(2, 2),
+                         padding='valid')(c6_c)
 
-            flat2 = Flatten()(mp3_c)
+    flat2 = Flatten()(mp3_c)
 
-        with tf.device("/gpu:3"):
-            input_a = Input(shape=(227, 227, 1))
+    input_a = Input(shape=(227, 227, 1))
 
-            c1_a = Conv2D(32,
-                          input_shape=(227, 227, 1),
-                          data_format='channels_last',
-                          kernel_size=(7, 7),
-                          strides=(4, 4),
-                          padding='valid',
-                          activation='relu')(input_a)
+    c1_a = Conv2D(32,
+                  input_shape=(227, 227, 1),
+                  data_format='channels_last',
+                  kernel_size=(7, 7),
+                  strides=(4, 4),
+                  padding='valid',
+                  activation='relu')(input_a)
 
-            mp1_a = MaxPooling2D(pool_size=(2, 2),
-                                 strides=(2, 2),
-                                 padding='valid')(c1_a)
-        with tf.device("/gpu:4"):
-            c2_a = Conv2D(64,
-                          kernel_size=(5, 5),
-                          strides=(1, 1),
-                          padding='valid',
-                          activation='relu')(mp1_a)
+    mp1_a = MaxPooling2D(pool_size=(2, 2),
+                         strides=(2, 2),
+                         padding='valid')(c1_a)
 
-            mp2_a = MaxPooling2D(pool_size=(2, 2),
-                                 strides=(2, 2),
-                                 padding='valid')(c2_a)
+    c2_a = Conv2D(64,
+                  kernel_size=(5, 5),
+                  strides=(1, 1),
+                  padding='valid',
+                  activation='relu')(mp1_a)
 
-            c3_a = Conv2D(384,
-                          kernel_size=(3, 3),
-                          strides=(1, 1),
-                          padding='valid',
-                          activation='relu')(mp2_a)
+    mp2_a = MaxPooling2D(pool_size=(2, 2),
+                         strides=(2, 2),
+                         padding='valid')(c2_a)
 
-            c4_a = Conv2D(384,
-                          kernel_size=(3, 3),
-                          strides=(1, 1),
-                          padding='valid',
-                          activation='relu')(c3_a)
+    c3_a = Conv2D(384,
+                  kernel_size=(3, 3),
+                  strides=(1, 1),
+                  padding='valid',
+                  activation='relu')(mp2_a)
 
-            c5_a = Conv2D(512,
-                          kernel_size=(3, 3),
-                          strides=(1, 1),
-                          padding='valid',
-                          activation='relu')(c4_a)
+    c4_a = Conv2D(384,
+                  kernel_size=(3, 3),
+                  strides=(1, 1),
+                  padding='valid',
+                  activation='relu')(c3_a)
 
-            c6_a = Conv2D(256,
-                          kernel_size=(3, 3),
-                          strides=(1, 1),
-                          padding='valid',
-                          activation='relu')(c5_a)
+    c5_a = Conv2D(512,
+                  kernel_size=(3, 3),
+                  strides=(1, 1),
+                  padding='valid',
+                  activation='relu')(c4_a)
 
-            mp3_a = MaxPooling2D(pool_size=(2, 2),
-                                 strides=(2, 2),
-                                 padding='valid')(c6_a)
+    c6_a = Conv2D(256,
+                  kernel_size=(3, 3),
+                  strides=(1, 1),
+                  padding='valid',
+                  activation='relu')(c5_a)
 
-            flat3 = Flatten()(mp3_a)
+    mp3_a = MaxPooling2D(pool_size=(2, 2),
+                         strides=(2, 2),
+                         padding='valid')(c6_a)
 
-        with tf.device("/gpu:0"):
-            merge = concatenate([flat1, flat2, flat3])
-            h1 = Dense(32, activation='relu')(merge)
-            output = Dense(1, activation='sigmoid')(h1)
+    flat3 = Flatten()(mp3_a)
+
+    merge = concatenate([flat1, flat2, flat3])
+
+    gc.collect()
+
+    h1 = Dense(32, activation='relu')(merge)
+    output = Dense(1, activation='sigmoid')(h1)
 
     model = Model(inputs=[input_s, input_c, input_a],
                   outputs=output)
