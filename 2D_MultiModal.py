@@ -404,3 +404,4 @@ model.fit([train_s, train_c, train_a],
 gc.collect()
 evaluation = model.evaluate([test_s, test_c, test_a], test_labels, verbose=0)
 print(evaluation)
+print(np.mean(accuracies))
