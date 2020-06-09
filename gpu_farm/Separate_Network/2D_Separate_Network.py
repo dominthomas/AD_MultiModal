@@ -304,6 +304,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         ad_train = pool.starmap(get_images, [([file], plane, slices, True, True) for file in ad_sub_train_files])
         pool.close()
         pool.join()
+        del pool
         ad_train = list(chain.from_iterable(ad_train))
 
         """Retrieve CN Files"""
@@ -313,6 +314,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         cn_train = pool.starmap(get_images, [([file], plane, slices, True) for file in cn_sub_train_files])
         pool.close()
         pool.join()
+        del pool
         cn_train = list(chain.from_iterable(cn_train))
 
         train = np.asarray(cn_train + ad_train)
