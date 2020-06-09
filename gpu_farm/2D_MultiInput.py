@@ -246,6 +246,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     ad_train_a = pool.starmap(get_images, [([file], "a", slices_a, True, True) for file in ad_sub_train_files])
     ad_train_a = list(chain.from_iterable(ad_train_a))
 
+    pool.close()
     gc.collect()
 
     ad_test_s = get_images(ad_sub_test_files, plane="s", slices=slices_s, same_length=True, data_length=data_len)
@@ -254,6 +255,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/CN/")
 
+    pool = mp.Pool(24)
     cn_train_s = pool.starmap(get_images, [([file], "s", slices_s, True) for file in cn_sub_train_files])
     cn_train_s = list(chain.from_iterable(cn_train_s))
 
@@ -262,6 +264,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
     cn_train_a = pool.starmap(get_images, [([file], "a", slices_a, True) for file in cn_sub_train_files])
     cn_train_a = list(chain.from_iterable(cn_train_a))
+    
     pool.close()
     gc.collect()
 
