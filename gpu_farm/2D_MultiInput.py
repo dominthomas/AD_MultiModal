@@ -226,7 +226,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     print("Test size: ", len(test_s))
     print("Train size: ", len(train_s))
     print("AD train size: ", len(ad_train_s))
-    print("CN_train_size: ", len(cn_train_s))
+    print("CN train size: ", len(cn_train_s))
 
     cn_train_s = None
     cn_train_c = None
