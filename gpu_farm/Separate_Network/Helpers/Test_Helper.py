@@ -5,14 +5,14 @@ from sklearn import metrics
 import os
 import gc
 
-from gpu_farm.Separate_Network.Image_Fetcher import get_images
+from gpu_farm.Separate_Network.Helpers.Image_Fetcher import get_images
 
 """@author Domin Thomas"""
 slices_s = [60, 61, 62]
 slices_a = [80, 81, 82]
 
 
-def test_model(self, ad_sub_test_files, cn_sub_test_files):
+def test_model(ad_sub_test_files, cn_sub_test_files):
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
     ad_test_s = get_images(ad_sub_test_files, plane="s", slices=slices_s)
     ad_test_c = get_images(ad_sub_test_files, plane="c")

@@ -14,8 +14,8 @@ import re
 import gc
 import shutil
 
-import gpu_farm.Separate_Network.Image_Fetcher
-import gpu_farm.Separate_Network.Image_Fetcher
+from gpu_farm.Separate_Network.Helpers.Image_Fetcher import get_images
+from gpu_farm.Separate_Network.Helpers.Test_Helper import test_model
 
 """@author Domin Thomas"""
 """Configure GPUs to prevent OOM errors"""
