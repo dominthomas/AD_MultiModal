@@ -102,7 +102,6 @@ def get_noisy_images(png):
 
 
 def get_images(folders, plane, slices=None, train=False, ad=False, same_length=False, data_length=0, adni=False):
-    print(folders)
     if slices is None:
         slices = [86, 87, 88]
 
@@ -234,21 +233,17 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
     data_len = len(ad_sub_test_files)
 
-
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
 
-    pool = mp.Pool(4)
-    print(os.getcwd())
+    pool = mp.Pool(24)
+
     ad_train_s = pool.starmap(get_images, [([file], "s", slices_s, True, True) for file in ad_sub_train_files])
-    pool.close()
     ad_train_s = list(chain.from_iterable(ad_train_s))
 
     ad_train_c = pool.starmap(get_images, [([file], "c", slices_c, True, True) for file in ad_sub_train_files])
-    pool.close()
     ad_train_c = list(chain.from_iterable(ad_train_c))
 
     ad_train_a = pool.starmap(get_images, [([file], "a", slices_a, True, True) for file in ad_sub_train_files])
-    pool.close()
     ad_train_a = list(chain.from_iterable(ad_train_a))
 
     gc.collect()
@@ -260,17 +255,14 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/CN/")
 
     cn_train_s = pool.starmap(get_images, [([file], "s", slices_s, True) for file in cn_sub_train_files])
-    pool.close()
     cn_train_s = list(chain.from_iterable(cn_train_s))
 
     cn_train_c = pool.starmap(get_images, [([file], "c", slices_c, True) for file in cn_sub_train_files])
-    pool.close()
     cn_train_c = list(chain.from_iterable(cn_train_c))
 
     cn_train_a = pool.starmap(get_images, [([file], "a", slices_a, True) for file in cn_sub_train_files])
-    pool.close()
     cn_train_a = list(chain.from_iterable(cn_train_a))
-
+    pool.close()
     gc.collect()
 
     cn_test_s = get_images(cn_sub_test_files, plane="s", slices=slices_s, same_length=True, data_length=data_len)
