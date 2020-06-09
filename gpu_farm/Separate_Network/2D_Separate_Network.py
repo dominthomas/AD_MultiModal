@@ -208,6 +208,7 @@ def test_model(ad_sub_test_files, cn_sub_test_files):
     print(report)
     print(metrics.balanced_accuracy_score(test_labels, pred_sum))
     accuracies.append(metrics.balanced_accuracy_score(test_labels, pred_sum))
+    print("Fold number is ", len(accuracies))
     print("The average accuracy right now is ", np.mean(accuracies))
     print("/=/=/=/=/=/=/=/=/---------------------------/=/=/=/=/=/=/=/=/")
     gc.collect()
