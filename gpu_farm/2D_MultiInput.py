@@ -102,12 +102,11 @@ def get_noisy_images(png):
 
 
 def get_images(folders, plane, slices=None, train=False, ad=False, same_length=False, data_length=0, adni=False):
+    print(folders)
     if slices is None:
         slices = [86, 87, 88]
 
     data_length = data_length * 3
-
-    print(os.getcwd())
 
     return_list = []
     for folder in folders:
@@ -239,6 +238,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
 
+    print(os.getcwd())
     ad_train_s = pool.starmap(get_images, [([file], "s", slices_s, True, True) for file in ad_sub_train_files])
     pool.close()
     ad_train_s = list(chain.from_iterable(ad_train_s))
