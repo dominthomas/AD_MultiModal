@@ -325,8 +325,8 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         print(len(cn_train))
         print(len(ad_train))
 
-        cn_train = None
-        ad_train = None
+        del cn_train
+        del ad_train
         gc.collect()
 
         #################################################
@@ -414,12 +414,14 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
         os.chdir('/home/k1651915/')
         model.save(model_file_name)
-
+        del model
+        del train
         K.clear_session()
         gc.collect()
 
     """Test the model"""
     test_model(ad_sub_test_files, cn_sub_test_files)
+    gc.collect()
 
     # Remove models
     os.chdir('/home/k1651915/')
