@@ -41,9 +41,9 @@ def crop(img, tol=0):
 
 def get_rotated_images(png, custom_angle=False, angle=0, ad=False):
     if ad:
-        angles = [1, 2, -1, -2]
+        angles = [1]
     else:
-        angles = [1, 2, -1, -2]
+        angles = [1]
 
     rotated_pngs = []
 
