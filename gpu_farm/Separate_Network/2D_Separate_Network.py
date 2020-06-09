@@ -23,7 +23,7 @@ import shutil
 
 def crop(img, tol=0):
     # img is 2D image data
-    # tol  is tolerance
+    # tol is tolerance
     mask = img > tol
     m, n = img.shape
     mask0, mask1 = mask.any(0), mask.any(1)
@@ -180,8 +180,6 @@ def test_model(ad_sub_test_files, cn_sub_test_files):
 
     print(len(ad_test_s))
     print(len(cn_test_s))
-    print(len(cn_test_c))
-    print(len(cn_test_a))
 
     test_s = np.asarray(cn_test_s + ad_test_s)
     test_c = np.asarray(cn_test_c + ad_test_c)
