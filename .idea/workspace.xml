@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f8c50649-df63-461f-9e4f-9c18e6a345fe" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/2D_MultiModal.py" beforeDir="false" afterPath="$PROJECT_DIR$/2D_MultiModal.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gpu_farm/2D_MultiInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_farm/2D_MultiInput.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

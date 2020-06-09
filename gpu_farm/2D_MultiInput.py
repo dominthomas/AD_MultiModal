@@ -107,6 +107,8 @@ def get_images(folders, plane, slices=None, train=False, ad=False, same_length=F
 
     data_length = data_length * 3
 
+    print(os.getcwd())
+
     return_list = []
     for folder in folders:
 
@@ -233,7 +235,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
     data_len = len(ad_sub_test_files)
 
-    pool = mp.Pool(16)
+    pool = mp.Pool(4)
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
 
