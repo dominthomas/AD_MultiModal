@@ -40,7 +40,7 @@ def get_rotated_images(png, custom_angle=False, angle=0, ad=False):
     if ad:
         angles = [1, 2, 3, 4, 5, -1, -2, -3, -4, -5]
     else:
-        angles = [1, 2, 3, 4, 5]
+        angles = [1, 2, 3, 4, 5, -1, -2, -3, -4, -5]
 
     rotated_pngs = []
 
