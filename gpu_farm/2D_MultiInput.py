@@ -81,22 +81,22 @@ def get_noisy_images(png):
     return_list.append(np.stack((noisy,) * 1, axis=2))
 
     # Salt and Pepper
-    s_vs_p = 0.9
-    amount = 0.004
-    out = np.copy(png)
+    #s_vs_p = 0.9
+    #amount = 0.004
+    #out = np.copy(png)
 
     # Salt
-    num_salt = np.ceil(amount * png.size * s_vs_p)
-    coords = [np.random.randint(0, i - 1, int(num_salt))
-              for i in png.shape]
-    out[tuple(coords)] = 1
+    #num_salt = np.ceil(amount * png.size * s_vs_p)
+    #coords = [np.random.randint(0, i - 1, int(num_salt))
+    #          for i in png.shape]
+    #out[tuple(coords)] = 1
 
     # Pepper
-    num_pepper = np.ceil(amount * png.size * (1. - s_vs_p))
-    coords = [np.random.randint(0, i - 1, int(num_pepper))
-              for i in png.shape]
-    out[tuple(coords)] = 0
-    return_list.append(np.stack((out,) * 1, axis=2))
+    #num_pepper = np.ceil(amount * png.size * (1. - s_vs_p))
+    #coords = [np.random.randint(0, i - 1, int(num_pepper))
+    #          for i in png.shape]
+    #out[tuple(coords)] = 0
+    #return_list.append(np.stack((out,) * 1, axis=2))
 
     return return_list
 
@@ -355,13 +355,13 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
                        strides=(2, 2),
                        padding='valid')(c2)
 
-    c3 = Conv2D(384,
+    c3 = Conv2D(128,
                 kernel_size=(3, 3),
                 strides=(1, 1),
                 padding='valid',
                 activation='relu')(mp2)
 
-    c4 = Conv2D(384,
+    c4 = Conv2D(256,
                 kernel_size=(3, 3),
                 strides=(1, 1),
                 padding='valid',
@@ -373,15 +373,9 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
                 padding='valid',
                 activation='relu')(c4)
 
-    c6 = Conv2D(256,
-                kernel_size=(3, 3),
-                strides=(1, 1),
-                padding='valid',
-                activation='relu')(c5)
-
     mp3 = MaxPooling2D(pool_size=(2, 2),
                        strides=(2, 2),
-                       padding='valid')(c6)
+                       padding='valid')(c5)
 
     flat1 = Flatten()(mp3)
 
@@ -463,13 +457,13 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
                          strides=(2, 2),
                          padding='valid')(c2_a)
 
-    c3_a = Conv2D(384,
+    c3_a = Conv2D(128,
                   kernel_size=(3, 3),
                   strides=(1, 1),
                   padding='valid',
                   activation='relu')(mp2_a)
 
-    c4_a = Conv2D(384,
+    c4_a = Conv2D(256,
                   kernel_size=(3, 3),
                   strides=(1, 1),
                   padding='valid',
@@ -481,17 +475,13 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
                   padding='valid',
                   activation='relu')(c4_a)
 
-    c6_a = Conv2D(256,
-                  kernel_size=(3, 3),
-                  strides=(1, 1),
-                  padding='valid',
-                  activation='relu')(c5_a)
-
     mp3_a = MaxPooling2D(pool_size=(2, 2),
                          strides=(2, 2),
-                         padding='valid')(c6_a)
+                         padding='valid')(c5_a)
 
     flat3 = Flatten()(mp3_a)
+
+    gc.collect()
 
     merge = concatenate([flat1, flat2, flat3])
 
