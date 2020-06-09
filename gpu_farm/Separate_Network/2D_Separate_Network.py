@@ -18,6 +18,8 @@ import gc
 import shutil
 
 """@author Domin Thomas"""
+accuracies = []
+
 """Crop function"""
 
 
@@ -205,6 +207,9 @@ def test_model(ad_sub_test_files, cn_sub_test_files):
     report = metrics.classification_report(test_labels, pred_sum)
     print(report)
     print(metrics.balanced_accuracy_score(test_labels, pred_sum))
+    accuracies.append(metrics.balanced_accuracy_score(test_labels, pred_sum))
+    print("The average accuracy right now is ", np.mean(accuracies))
+    print("/=/=/=/=/=/=/=/=/---------------------------/=/=/=/=/=/=/=/=/")
     gc.collect()
     #################################################
 
@@ -249,8 +254,6 @@ for train_index_ad, test_index_ad in kf_ad_sub_id:
 """Create an infinite iterator to cycle through the AD folds"""
 train_indexes_ad_iterator = cycle(train_indexes_ad)
 test_indexes_ad_iterator = cycle(test_indexes_ad)
-
-accuracies = []
 
 for train_index_cn, test_index_cn in kf_cn_sub_id:
 
