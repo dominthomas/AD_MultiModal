@@ -234,10 +234,10 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
     data_len = len(ad_sub_test_files)
 
-    pool = mp.Pool(4)
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
 
+    pool = mp.Pool(4)
     print(os.getcwd())
     ad_train_s = pool.starmap(get_images, [([file], "s", slices_s, True, True) for file in ad_sub_train_files])
     pool.close()
