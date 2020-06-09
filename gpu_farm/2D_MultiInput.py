@@ -233,7 +233,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
     data_len = len(ad_sub_test_files)
 
-    pool = mp.Pool(24)
+    pool = mp.Pool(16)
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
 
