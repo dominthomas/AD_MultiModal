@@ -303,6 +303,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         pool = mp.Pool(32)
         ad_train = pool.starmap(get_images, [([file], plane, slices, True, True) for file in ad_sub_train_files])
         pool.close()
+        pool.join()
         ad_train = list(chain.from_iterable(ad_train))
 
         """Retrieve CN Files"""
@@ -311,6 +312,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         pool = mp.Pool(32)
         cn_train = pool.starmap(get_images, [([file], plane, slices, True) for file in cn_sub_train_files])
         pool.close()
+        pool.join()
         cn_train = list(chain.from_iterable(cn_train))
 
         train = np.asarray(cn_train + ad_train)
@@ -329,7 +331,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         #################################################
         """Set random seed for reproducibility"""
         tf.random.set_seed(129)
-        
+
         with tf.device("/cpu:0"):
             with tf.device("/gpu:0"):
                 model = tf.keras.Sequential()
