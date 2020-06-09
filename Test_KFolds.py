@@ -1,7 +1,7 @@
 import os
 import re
 from sklearn.model_selection import KFold
-from tensorflow.python.ops.gen_dataset_ops import iterator
+from itertools import cycle
 
 ad_files = os.listdir("/home/dthomas/AD/2D_MultiModal/OASIS3/AD/")
 cn_files = os.listdir("/home/dthomas/AD/2D_MultiModal/OASIS3/CN/")
@@ -23,6 +23,7 @@ slices_a = [80, 81, 82]
 
 kf = KFold(n_splits=15)
 kf_ad_sub_id = kf.split(sub_id_ad)
+kf = KFold(n_splits=50)
 kf_cn_sub_id = kf.split(sub_id_cn)
 
 train_indexes_ad = []
@@ -32,23 +33,10 @@ for train_index_ad, test_index_ad in kf_ad_sub_id:
     train_indexes_ad.append(list(train_index_ad))
     test_indexes_ad.append(list(test_index_ad))
 
-print(test_indexes_ad[14])
-print(len(test_indexes_ad[14]))
+train_index_iterator = cycle(train_indexes_ad)
 
-r = re.compile("(OAS\\d*)")
-# ad_sub_train_files = list(filter(r.match, ad_files))
-
-ad_sub_train_files = []
-
-test_case_1 = [sub_id_ad[i] for i in test_indexes_ad[0]]
-print(len(test_case_1))
-
-for sub in test_case_1:
-    r = re.compile(sub)
-    files = list(filter(r.match, ad_files))
-    ad_sub_train_files.append(files[0])
-    print(files)
-
-print("________________-")
-print(ad_sub_train_files)
-
+print("Length of ad_folds: ",len(train_indexes_ad))
+for train_index, test_index in kf_cn_sub_id:
+    print(len(train_index))
+    print(len(test_index))
+    print(next(train_index_iterator))

@@ -2,7 +2,6 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.layers import Conv2D
 from tensorflow.keras.layers import MaxPooling2D
-from tensorflow.keras.layers import Activation
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Flatten
 from tensorflow.keras.layers import Input
@@ -10,6 +9,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras import backend as K
 from tensorflow.keras.layers import concatenate
 from sklearn.model_selection import KFold
+from itertools import cycle
 
 import os
 import re
@@ -138,6 +138,7 @@ slices_a = [80, 81, 82]
 
 kf = KFold(n_splits=15)
 kf_ad_sub_id = kf.split(sub_id_ad)
+kf = KFold(n_splits=50)
 kf_cn_sub_id = kf.split(sub_id_cn)
 
 train_indexes_ad = []
@@ -147,15 +148,18 @@ for train_index_ad, test_index_ad in kf_ad_sub_id:
     train_indexes_ad.append(list(train_index_ad))
     test_indexes_ad.append(list(test_index_ad))
 
-count = 0
+train_indexes_ad_iterator = cycle(train_indexes_ad)
+test_indexes_ad_iterator = cycle(test_indexes_ad)
+
 accuracies = []
 
 for train_index_cn, test_index_cn in kf_cn_sub_id:
+
     cn_train_subs = [sub_id_cn[i] for i in train_index_cn]
     cn_test_subs = [sub_id_cn[i] for i in test_index_cn]
 
-    ad_train_subs = [sub_id_ad[i] for i in train_indexes_ad[count]]
-    ad_test_subs = [sub_id_ad[i] for i in test_indexes_ad[count]]
+    ad_train_subs = [sub_id_ad[i] for i in next(train_indexes_ad_iterator)]
+    ad_test_subs = [sub_id_ad[i] for i in next(test_indexes_ad_iterator)]
 
     ad_sub_train_files = []
     ad_sub_test_files = []
@@ -183,25 +187,25 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         files = list(filter(r.match, cn_files))
         cn_sub_test_files.append(files[0])
 
-    data_length = len(ad_sub_test_files)
+    data_len = len(ad_sub_test_files)
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
     ad_train_s = get_images(ad_sub_train_files, train=True, ad=True, plane="s", slices=slices_s)
     ad_train_c = get_images(ad_sub_train_files, train=True, ad=True, plane="c")
     ad_train_a = get_images(ad_sub_train_files, train=True, ad=True, plane="a", slices=slices_a)
 
-    ad_test_s = get_images(ad_sub_test_files, plane="s", slices=slices_s, same_length=True, data_length=data_length)
-    ad_test_c = get_images(ad_sub_test_files, plane="c", same_length=True, data_length=data_length)
-    ad_test_a = get_images(ad_sub_test_files, plane="a", slices=slices_a, same_length=True, data_length=data_length)
+    ad_test_s = get_images(ad_sub_test_files, plane="s", slices=slices_s, same_length=True, data_length=data_len)
+    ad_test_c = get_images(ad_sub_test_files, plane="c", same_length=True, data_length=data_len)
+    ad_test_a = get_images(ad_sub_test_files, plane="a", slices=slices_a, same_length=True, data_length=data_len)
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/CN/")
     cn_train_s = get_images(cn_sub_train_files, train=True, plane="s", slices=slices_s)
     cn_train_c = get_images(cn_sub_train_files, train=True, plane="c")
     cn_train_a = get_images(cn_sub_train_files, train=True, plane="a", slices=slices_a)
 
-    cn_test_s = get_images(cn_sub_test_files, plane="s", slices=slices_s, same_length=True, data_length=data_length)
-    cn_test_c = get_images(cn_sub_test_files, plane="c", same_length=True, data_length=data_length)
-    cn_test_a = get_images(cn_sub_test_files, plane="a", slices=slices_a, same_length=True, data_length=data_length)
+    cn_test_s = get_images(cn_sub_test_files, plane="s", slices=slices_s, same_length=True, data_length=data_len)
+    cn_test_c = get_images(cn_sub_test_files, plane="c", same_length=True, data_length=data_len)
+    cn_test_a = get_images(cn_sub_test_files, plane="a", slices=slices_a, same_length=True, data_length=data_len)
 
     train_s = np.asarray(cn_train_s + ad_train_s)
     train_c = np.asarray(cn_train_c + ad_train_c)
@@ -219,12 +223,10 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     y2 = np.ones(len(ad_test_s))
     test_labels = np.concatenate((y1, y2), axis=None)
 
-    print("test & train")
-    print(len(test_s))
-    print(len(train_s))
-    print("ad & cn")
-    print(len(ad_train_s))
-    print(len(cn_train_s))
+    print("Test size: ", len(test_s))
+    print("Train size: ", len(train_s))
+    print("AD train size: ", len(ad_train_s))
+    print("CN_train_size: ", len(cn_train_s))
 
     cn_train_s = None
     cn_train_c = None
@@ -428,7 +430,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
     model.fit([train_s, train_c, train_a],
               train_labels,
-              epochs=50,
+              epochs=10,
               batch_size=512,
               shuffle=True)
     #################################################
@@ -437,4 +439,5 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     evaluation = model.evaluate([test_s, test_c, test_a], test_labels, verbose=0)
     print(evaluation)
     accuracies.append(evaluation[1])
-    print(np.mean(accuracies))
+    print("The mean: ", np.mean(accuracies))
+    K.clear_session()
