@@ -234,18 +234,23 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     data_len = len(ad_sub_test_files)
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
-
     pool = mp.Pool(32)
     ad_train_s = pool.starmap(get_images, [([file], "s", slices_s, True, True) for file in ad_sub_train_files])
+    pool.close()
     ad_train_s = list(chain.from_iterable(ad_train_s))
 
+    os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
+    pool = mp.Pool(32)
     ad_train_c = pool.starmap(get_images, [([file], "c", slices_c, True, True) for file in ad_sub_train_files])
+    pool.close()
     ad_train_c = list(chain.from_iterable(ad_train_c))
 
+    os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
+    pool = mp.Pool(32)
     ad_train_a = pool.starmap(get_images, [([file], "a", slices_a, True, True) for file in ad_sub_train_files])
+    pool.close()
     ad_train_a = list(chain.from_iterable(ad_train_a))
 
-    pool.close()
     gc.collect()
 
     ad_test_s = get_images(ad_sub_test_files, plane="s", slices=slices_s, same_length=True, data_length=data_len)
@@ -253,18 +258,23 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     ad_test_a = get_images(ad_sub_test_files, plane="a", slices=slices_a, same_length=True, data_length=data_len)
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/CN/")
-
     pool = mp.Pool(32)
     cn_train_s = pool.starmap(get_images, [([file], "s", slices_s, True) for file in cn_sub_train_files])
+    pool.close()
     cn_train_s = list(chain.from_iterable(cn_train_s))
 
+    os.chdir("/home/k1651915/2D_MultiModal/OASIS3/CN/")
+    pool = mp.Pool(32)
     cn_train_c = pool.starmap(get_images, [([file], "c", slices_c, True) for file in cn_sub_train_files])
+    pool.close()
     cn_train_c = list(chain.from_iterable(cn_train_c))
 
+    os.chdir("/home/k1651915/2D_MultiModal/OASIS3/CN/")
+    pool = mp.Pool(32)
     cn_train_a = pool.starmap(get_images, [([file], "a", slices_a, True) for file in cn_sub_train_files])
+    pool.close()
     cn_train_a = list(chain.from_iterable(cn_train_a))
 
-    pool.close()
     gc.collect()
 
     cn_test_s = get_images(cn_sub_test_files, plane="s", slices=slices_s, same_length=True, data_length=data_len)
