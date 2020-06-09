@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f8c50649-df63-461f-9e4f-9c18e6a345fe" name="Default Changelist" comment="" />
+    <list default="true" id="f8c50649-df63-461f-9e4f-9c18e6a345fe" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/2D_MultiModal.py" beforeDir="false" afterPath="$PROJECT_DIR$/2D_MultiModal.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gpu_farm/2D_MultiInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_farm/2D_MultiInput.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +41,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Test_KFolds">
+  <component name="RunManager" selected="Python.Test_Python_Crop_And_Rotate">
     <configuration name="2D_MultiModal" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="AD_MulitModal" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -93,27 +97,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/2D_Separate_Network_Test.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Apply_CAM" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="AD_MulitModal" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Apply_CAM.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -185,13 +168,34 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Test_Python_Crop_And_Rotate" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="AD_MulitModal" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Downloads/Python_Scripts" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/Downloads/Python_Scripts/Test_Python_Crop_And_Rotate.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.Test_Python_Crop_And_Rotate" />
         <item itemvalue="Python.Test_KFolds" />
         <item itemvalue="Python.Tes_KFolds" />
         <item itemvalue="Python.2D_Separate_Network_Test" />
         <item itemvalue="Python.Class_Activation_Maps" />
-        <item itemvalue="Python.Apply_CAM" />
       </list>
     </recent_temporary>
   </component>

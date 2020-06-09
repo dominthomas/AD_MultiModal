@@ -9,7 +9,8 @@ from tensorflow.keras.models import Model
 from tensorflow.keras import backend as K
 from tensorflow.keras.layers import concatenate
 from sklearn.model_selection import KFold
-from itertools import cycle
+import multiprocessing as mp
+from itertools import cycle, chain
 
 import os
 import re
@@ -23,6 +24,8 @@ import matplotlib.image as mpimg
 gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
+
+tf.random.set_seed(129)
 
 
 def crop(img, tol=0):
@@ -62,7 +65,43 @@ def get_rotated_images(png, custom_angle=False, angle=0, ad=False):
     return rotated_pngs
 
 
-def get_images(folders, plane, slices=None, train=False, same_length=False, data_length=0, adni=False, ad=False):
+def get_noisy_images(png):
+    png = cv2.resize(crop(png), (227, 227))
+    return_list = []
+
+    row, col = png.shape
+
+    # Gaussian
+    mean = 0
+    var = 0.01
+    sigma = var ** 0.85
+    gauss = np.random.normal(mean, sigma, (row, col))
+    gauss = gauss.reshape(row, col)
+    noisy = png + gauss
+    return_list.append(np.stack((noisy,) * 1, axis=2))
+
+    # Salt and Pepper
+    s_vs_p = 0.9
+    amount = 0.004
+    out = np.copy(png)
+
+    # Salt
+    num_salt = np.ceil(amount * png.size * s_vs_p)
+    coords = [np.random.randint(0, i - 1, int(num_salt))
+              for i in png.shape]
+    out[tuple(coords)] = 1
+
+    # Pepper
+    num_pepper = np.ceil(amount * png.size * (1. - s_vs_p))
+    coords = [np.random.randint(0, i - 1, int(num_pepper))
+              for i in png.shape]
+    out[tuple(coords)] = 0
+    return_list.append(np.stack((out,) * 1, axis=2))
+
+    return return_list
+
+
+def get_images(folders, plane, slices=None, train=False, ad=False, same_length=False, data_length=0, adni=False):
     if slices is None:
         slices = [86, 87, 88]
 
@@ -100,6 +139,10 @@ def get_images(folders, plane, slices=None, train=False, same_length=False, data
             return_list = return_list + get_rotated_images(png1, ad=ad)
             return_list = return_list + get_rotated_images(png2, ad=ad)
 
+            return_list = return_list + get_noisy_images(png0)
+            return_list = return_list + get_noisy_images(png1)
+            return_list = return_list + get_noisy_images(png2)
+
         png0 = crop(png0)
         png1 = crop(png1)
         png2 = crop(png2)
@@ -135,6 +178,7 @@ for file in cn_files:
 
 slices_s = [60, 61, 62]
 slices_a = [80, 81, 82]
+slices_c = [86, 87, 88]
 
 kf = KFold(n_splits=15)
 kf_ad_sub_id = kf.split(sub_id_ad)
@@ -189,19 +233,43 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
     data_len = len(ad_sub_test_files)
 
+    pool = mp.Pool(24)
+
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
-    ad_train_s = get_images(ad_sub_train_files, train=True, ad=True, plane="s", slices=slices_s)
-    ad_train_c = get_images(ad_sub_train_files, train=True, ad=True, plane="c")
-    ad_train_a = get_images(ad_sub_train_files, train=True, ad=True, plane="a", slices=slices_a)
+
+    ad_train_s = pool.starmap(get_images, [([file], "s", slices_s, True, True) for file in ad_sub_train_files])
+    pool.close()
+    ad_train_s = list(chain.from_iterable(ad_train_s))
+
+    ad_train_c = pool.starmap(get_images, [([file], "c", slices_c, True, True) for file in ad_sub_train_files])
+    pool.close()
+    ad_train_c = list(chain.from_iterable(ad_train_c))
+
+    ad_train_a = pool.starmap(get_images, [([file], "a", slices_a, True, True) for file in ad_sub_train_files])
+    pool.close()
+    ad_train_a = list(chain.from_iterable(ad_train_a))
+
+    gc.collect()
 
     ad_test_s = get_images(ad_sub_test_files, plane="s", slices=slices_s, same_length=True, data_length=data_len)
     ad_test_c = get_images(ad_sub_test_files, plane="c", same_length=True, data_length=data_len)
     ad_test_a = get_images(ad_sub_test_files, plane="a", slices=slices_a, same_length=True, data_length=data_len)
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/CN/")
-    cn_train_s = get_images(cn_sub_train_files, train=True, plane="s", slices=slices_s)
-    cn_train_c = get_images(cn_sub_train_files, train=True, plane="c")
-    cn_train_a = get_images(cn_sub_train_files, train=True, plane="a", slices=slices_a)
+
+    cn_train_s = pool.starmap(get_images, [([file], "s", slices_s, True) for file in cn_sub_train_files])
+    pool.close()
+    cn_train_s = list(chain.from_iterable(cn_train_s))
+
+    cn_train_c = pool.starmap(get_images, [([file], "c", slices_c, True) for file in cn_sub_train_files])
+    pool.close()
+    cn_train_c = list(chain.from_iterable(cn_train_c))
+
+    cn_train_a = pool.starmap(get_images, [([file], "a", slices_a, True) for file in cn_sub_train_files])
+    pool.close()
+    cn_train_a = list(chain.from_iterable(cn_train_a))
+
+    gc.collect()
 
     cn_test_s = get_images(cn_sub_test_files, plane="s", slices=slices_s, same_length=True, data_length=data_len)
     cn_test_c = get_images(cn_sub_test_files, plane="c", same_length=True, data_length=data_len)
@@ -430,14 +498,21 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
 
     model.fit([train_s, train_c, train_a],
               train_labels,
-              epochs=10,
+              epochs=5,
               batch_size=512,
               shuffle=True)
     #################################################
 
     gc.collect()
+
     evaluation = model.evaluate([test_s, test_c, test_a], test_labels, verbose=0)
     print(evaluation)
     accuracies.append(evaluation[1])
+    print("Fold number is: ", len(accuracies))
     print("The mean: ", np.mean(accuracies))
+
     K.clear_session()
+    train_s = None
+    train_c = None
+    train_a = None
+    gc.collect()
