@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f8c50649-df63-461f-9e4f-9c18e6a345fe" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/gpu_farm/Separate_Network/2D_Separate_Network.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gpu_farm/Separate_Network/Image_Fetcher.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gpu_farm/Separate_Network/Test_Helper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gpu_farm/2D_MultiInput.py" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_farm/Multi_Input/2D_MultiInput.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gpu_farm/Separate_Network/2D_Separate_Network.py" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_farm/Separate_Network/2D_Separate_Network.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gpu_farm/Separate_Network/Test_Helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_farm/Separate_Network/Test_Helper.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
