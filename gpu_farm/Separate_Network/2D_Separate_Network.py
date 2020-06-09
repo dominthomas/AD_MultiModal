@@ -141,9 +141,9 @@ def get_images(folders, plane, slices=None, train=False, ad=False, same_length=F
             return_list = return_list + get_rotated_images(png1, ad=ad)
             return_list = return_list + get_rotated_images(png2, ad=ad)
 
-            # return_list = return_list + get_noisy_images(png0)
-            # return_list = return_list + get_noisy_images(png1)
-            # return_list = return_list + get_noisy_images(png2)
+            return_list = return_list + get_noisy_images(png0)
+            return_list = return_list + get_noisy_images(png1)
+            return_list = return_list + get_noisy_images(png2)
 
         png0 = crop(png0)
         png1 = crop(png1)
