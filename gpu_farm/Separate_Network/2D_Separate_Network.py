@@ -219,9 +219,6 @@ gpus = tf.config.experimental.list_physical_devices('GPU')
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
 
-"""Set random seed for reproducibility"""
-tf.random.set_seed(129)
-
 """Retrieve AD & CN Filenames"""
 ad_files = os.listdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
 cn_files = os.listdir("/home/k1651915/2D_MultiModal/OASIS3/CN/")
@@ -330,6 +327,9 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         gc.collect()
 
         #################################################
+        """Set random seed for reproducibility"""
+        tf.random.set_seed(129)
+        
         with tf.device("/cpu:0"):
             with tf.device("/gpu:0"):
                 model = tf.keras.Sequential()
