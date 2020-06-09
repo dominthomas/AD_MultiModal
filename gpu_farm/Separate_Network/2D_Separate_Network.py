@@ -413,8 +413,6 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         model.save(model_file_name)
 
         K.clear_session()
-        ad_train = None
-        cn_train = None
         gc.collect()
 
     """Test the model"""
