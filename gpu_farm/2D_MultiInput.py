@@ -237,18 +237,21 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     pool = mp.Pool(32)
     ad_train_s = pool.starmap(get_images, [([file], "s", slices_s, True, True) for file in ad_sub_train_files])
     pool.close()
+    print("ad s")
     ad_train_s = list(chain.from_iterable(ad_train_s))
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
     pool = mp.Pool(32)
     ad_train_c = pool.starmap(get_images, [([file], "c", slices_c, True, True) for file in ad_sub_train_files])
     pool.close()
+    print("ad c")
     ad_train_c = list(chain.from_iterable(ad_train_c))
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
     pool = mp.Pool(32)
     ad_train_a = pool.starmap(get_images, [([file], "a", slices_a, True, True) for file in ad_sub_train_files])
     pool.close()
+    print("ad a")
     ad_train_a = list(chain.from_iterable(ad_train_a))
 
     gc.collect()
@@ -261,25 +264,31 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     pool = mp.Pool(32)
     cn_train_s = pool.starmap(get_images, [([file], "s", slices_s, True) for file in cn_sub_train_files])
     pool.close()
+    print("cn s")
     cn_train_s = list(chain.from_iterable(cn_train_s))
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/CN/")
     pool = mp.Pool(32)
     cn_train_c = pool.starmap(get_images, [([file], "c", slices_c, True) for file in cn_sub_train_files])
     pool.close()
+    print("cn c")
     cn_train_c = list(chain.from_iterable(cn_train_c))
 
     os.chdir("/home/k1651915/2D_MultiModal/OASIS3/CN/")
     pool = mp.Pool(32)
     cn_train_a = pool.starmap(get_images, [([file], "a", slices_a, True) for file in cn_sub_train_files])
     pool.close()
+    print("cn a")
     cn_train_a = list(chain.from_iterable(cn_train_a))
 
     gc.collect()
 
     cn_test_s = get_images(cn_sub_test_files, plane="s", slices=slices_s, same_length=True, data_length=data_len)
+    print("cn test s")
     cn_test_c = get_images(cn_sub_test_files, plane="c", same_length=True, data_length=data_len)
+    print("cn test c")
     cn_test_a = get_images(cn_sub_test_files, plane="a", slices=slices_a, same_length=True, data_length=data_len)
+    print("cn test a")
 
     train_s = np.asarray(cn_train_s + ad_train_s)
     train_c = np.asarray(cn_train_c + ad_train_c)
