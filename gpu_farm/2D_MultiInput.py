@@ -38,9 +38,9 @@ def crop(img, tol=0):
 
 def get_rotated_images(png, custom_angle=False, angle=0, ad=False):
     if ad:
-        angles = [1, 2, 3, 4, 5, -1, -2, -3, -4, -5]
+        angles = [1, 2, 3, -1, -2, -3]
     else:
-        angles = [1, 2, 3, 4, 5, -1, -2, -3, -4, -5]
+        angles = [1, 2, 3, -1, -2, -3]
 
     rotated_pngs = []
 
@@ -219,8 +219,12 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     y2 = np.ones(len(ad_test_s))
     test_labels = np.concatenate((y1, y2), axis=None)
 
+    print("test & train")
     print(len(test_s))
     print(len(train_s))
+    print("ad & cn")
+    print(len(ad_train_s))
+    print(len(cn_train_s))
 
     cn_train_s = None
     cn_train_c = None
