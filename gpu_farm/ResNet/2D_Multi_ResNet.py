@@ -99,14 +99,16 @@ class ResNet:
             # initialize the stride, then apply a residual module
             # used to reduce the spatial size of the input volume
             stride = (1, 1) if i == 0 else (2, 2)
-            x = ResNet.residual_module(x, filters[i + 1], stride,
-                                       chanDim, red=True, bnEps=bnEps, bnMom=bnMom)
+            with tf.device("/gpu:0"):
+                x = ResNet.residual_module(x, filters[i + 1], stride,
+                                           chanDim, red=True, bnEps=bnEps, bnMom=bnMom)
 
             # loop over the number of layers in the stage
             for j in range(0, stages[i] - 1):
                 # apply a ResNet module
-                x = ResNet.residual_module(x, filters[i + 1],
-                                           (1, 1), chanDim, bnEps=bnEps, bnMom=bnMom)
+                with tf.device("/gpu:1"):
+                    x = ResNet.residual_module(x, filters[i + 1],
+                                               (1, 1), chanDim, bnEps=bnEps, bnMom=bnMom)
 
         # apply BN => ACT => POOL
         x = BatchNormalization(axis=chanDim, epsilon=bnEps,
@@ -457,20 +459,18 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         """Set random seed for reproducibility"""
         tf.random.set_seed(129)
 
-        strategy = tf.distribute.MirroredStrategy()
-
-        with strategy.scope():
+        with tf.device("/cpu:0"):
             model = ResNet.build(227, 227, 1, 1, (3, 4, 6, 8), (32, 64, 128, 256, 512))
 
-            model.compile(loss=tf.keras.losses.binary_crossentropy,
-                          optimizer=tf.keras.optimizers.Adagrad(learning_rate=0.005),
-                          metrics=['accuracy'])
+        model.compile(loss=tf.keras.losses.binary_crossentropy,
+                      optimizer=tf.keras.optimizers.Adagrad(learning_rate=0.005),
+                      metrics=['accuracy'])
 
-            model.fit(train,
-                      train_labels,
-                      epochs=20,
-                      batch_size=32,
-                      shuffle=True)
+        model.fit(train,
+                  train_labels,
+                  epochs=20,
+                  batch_size=256,
+                  shuffle=True)
         #################################################
 
         model_file_name = "coronal_86_87_88"
