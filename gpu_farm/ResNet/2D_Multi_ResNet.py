@@ -1,9 +1,17 @@
 import numpy as np
 import tensorflow as tf
+from tensorflow.keras.layers import BatchNormalization
 from tensorflow.keras.layers import Conv2D
+from tensorflow.keras.layers import AveragePooling2D
 from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.layers import ZeroPadding2D
+from tensorflow.keras.layers import Activation
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Flatten
+from tensorflow.keras.layers import Input
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import add
+from tensorflow.keras.regularizers import l2
 from tensorflow.keras import backend as K
 from sklearn.model_selection import KFold
 from sklearn import metrics
@@ -19,6 +27,104 @@ import shutil
 
 """@author Domin Thomas"""
 accuracies = []
+
+
+class ResNet:
+    @staticmethod
+    def residual_module(data, K, stride, chanDim, red=False,
+                        reg=0.0001, bnEps=2e-5, bnMom=0.9):
+
+        # the shortcut branch of the ResNet module should be
+        # initialize as the input (identity) data
+        shortcut = data
+
+        # the first block of the ResNet module are the 1x1 CONVs
+        bn1 = BatchNormalization(axis=chanDim, epsilon=bnEps, momentum=bnMom)(data)
+        act1 = Activation("relu")(bn1)
+        conv1 = Conv2D(int(K * 0.25), (1, 1), use_bias=False,
+                       kernel_regularizer=l2(reg))(act1)
+
+        # the second block of the ResNet module are the 3x3 CONVs
+        bn2 = BatchNormalization(axis=chanDim, epsilon=bnEps, momentum=bnMom)(conv1)
+        act2 = Activation("relu")(bn2)
+        conv2 = Conv2D(int(K * 0.25), (3, 3), strides=stride, padding="same", use_bias=False,
+                       kernel_regularizer=l2(reg))(act2)
+
+        # the third block of the ResNet module is another set of 1x1 CONVs
+        bn3 = BatchNormalization(axis=chanDim, epsilon=bnEps, momentum=bnMom)(conv2)
+        act3 = Activation("relu")(bn3)
+        conv3 = Conv2D(K, (1, 1), use_bias=False, kernel_regularizer=l2(reg))(act3)
+
+        # if we are to reduce the spatial size, apply a CONV layer to the shortcut
+        if red:
+            shortcut = Conv2D(K, (1, 1), strides=stride, use_bias=False,
+                              kernel_regularizer=l2(reg))(act1)
+
+        # add together the shortcut and the final CONV
+        x = add([conv3, shortcut])
+        # return the addition as the output of the ResNet module
+        return x
+
+    @staticmethod
+    def build(width, height, depth, classes, stages, filters,
+              reg=0.0001, bnEps=2e-5, bnMom=0.9):
+
+        # initialize the input shape to be "channels last" and the
+        # channels dimension itself
+        inputShape = (height, width, depth)
+        chanDim = -1
+
+        # if we are using "channels first", update the input shape
+        # and channels dimension
+        if K.image_data_format() == "channels_first":
+            inputShape = (depth, height, width)
+            chanDim = 1
+
+        # set the input and apply BN
+        inputs = Input(shape=inputShape)
+        x = BatchNormalization(axis=chanDim, epsilon=bnEps,
+                               momentum=bnMom)(inputs)
+
+        # apply CONV => BN => ACT => POOL to reduce spatial size
+        x = Conv2D(filters[0], (5, 5), use_bias=False,
+                   padding="same", kernel_regularizer=l2(reg))(x)
+        x = BatchNormalization(axis=chanDim, epsilon=bnEps,
+                               momentum=bnMom)(x)
+        x = Activation("relu")(x)
+        x = ZeroPadding2D((1, 1))(x)
+        x = MaxPooling2D((3, 3), strides=(2, 2))(x)
+
+        # loop over the number of stages
+        for i in range(0, len(stages)):
+            # initialize the stride, then apply a residual module
+            # used to reduce the spatial size of the input volume
+            stride = (1, 1) if i == 0 else (2, 2)
+            x = ResNet.residual_module(x, filters[i + 1], stride,
+                                       chanDim, red=True, bnEps=bnEps, bnMom=bnMom)
+
+            # loop over the number of layers in the stage
+            for j in range(0, stages[i] - 1):
+                # apply a ResNet module
+                x = ResNet.residual_module(x, filters[i + 1],
+                                           (1, 1), chanDim, bnEps=bnEps, bnMom=bnMom)
+
+        # apply BN => ACT => POOL
+        x = BatchNormalization(axis=chanDim, epsilon=bnEps,
+                               momentum=bnMom)(x)
+        x = Activation("relu")(x)
+        x = AveragePooling2D((8, 8))(x)
+
+        # softmax classifier
+        x = Flatten()(x)
+        x = Dense(classes, kernel_regularizer=l2(reg))(x)
+        x = Activation("sigmoid")(x)
+
+        # create the model
+        model = Model(inputs, x, name="resnet")
+
+        # return the constructed network architecture
+        return model
+
 
 """Crop function"""
 
@@ -203,7 +309,7 @@ def test_model(ad_sub_test_files, cn_sub_test_files):
     pred_a = model_axial.predict_classes(test_a).flatten()
 
     pred_sum = pred_s + pred_c + pred_a
-    pred_sum = [1 if x >= 1 else 0 for x in pred_sum]
+    pred_sum = [1 if x >= 2 else 0 for x in pred_sum]
     report = metrics.classification_report(test_labels, pred_sum)
     print(report)
     print(metrics.balanced_accuracy_score(test_labels, pred_sum))
@@ -211,6 +317,20 @@ def test_model(ad_sub_test_files, cn_sub_test_files):
     print("Fold number is ", len(accuracies))
     print("The average accuracy right now is ", np.mean(accuracies))
     print("/=/=/=/=/=/=/=/=/---------------------------/=/=/=/=/=/=/=/=/")
+    del model_sagittal
+    del model_coronal
+    del model_axial
+    del test_s
+    del test_c
+    del test_a
+    del ad_test_s
+    del ad_test_c
+    del ad_test_a
+    del cn_test_s
+    del cn_test_c
+    del cn_test_a
+    del report
+    K.clear_session()
     gc.collect()
     #################################################
 
@@ -337,72 +457,12 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         """Set random seed for reproducibility"""
         tf.random.set_seed(129)
 
-        with tf.device("/cpu:0"):
-            with tf.device("/gpu:0"):
-                model = tf.keras.Sequential()
+        model = ResNet.build(227, 227, 1, 1, (3, 4, 6, 8), (32, 64, 128, 256, 512))
 
-                model.add(Conv2D(32,
-                                 input_shape=(227, 227, 1),
-                                 data_format='channels_last',
-                                 kernel_size=(7, 7),
-                                 strides=(4, 4),
-                                 padding='valid',
-                                 activation='relu'))
-
-            with tf.device("/gpu:1"):
-                model.add(MaxPooling2D(pool_size=(2, 2),
-                                       strides=(2, 2),
-                                       padding='valid'))
-
-            with tf.device("/gpu:2"):
-                model.add(Conv2D(64,
-                                 kernel_size=(5, 5),
-                                 strides=(1, 1),
-                                 padding='valid',
-                                 activation='relu'))
-
-                model.add(MaxPooling2D(pool_size=(2, 2),
-                                       strides=(2, 2),
-                                       padding='valid'))
-            with tf.device("/gpu:3"):
-                model.add(Conv2D(384,
-                                 kernel_size=(3, 3),
-                                 strides=(1, 1),
-                                 padding='valid',
-                                 activation='relu'))
-
-                model.add(Conv2D(384,
-                                 kernel_size=(3, 3),
-                                 strides=(1, 1),
-                                 padding='valid',
-                                 activation='relu'))
-
-            with tf.device("/gpu:4"):
-                model.add(Conv2D(512,
-                                 kernel_size=(3, 3),
-                                 strides=(1, 1),
-                                 padding='valid',
-                                 activation='relu'))
-
-                model.add(Conv2D(256,
-                                 kernel_size=(3, 3),
-                                 strides=(1, 1),
-                                 padding='valid',
-                                 activation='relu'))
-
-                model.add(MaxPooling2D(pool_size=(2, 2),
-                                       strides=(2, 2),
-                                       padding='valid'))
-
-                model.add(Flatten())
-
-                model.add(Dense(32, activation='relu'))
-
-                model.add(Dense(1, activation='sigmoid'))
         #################################################
 
         model.compile(loss=tf.keras.losses.binary_crossentropy,
-                      optimizer='adam',
+                      optimizer=tf.keras.optimizers.Adagrad(learning_rate=0.005),
                       metrics=['accuracy'])
 
         model.fit(train,
@@ -424,7 +484,6 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         del model
         del train
         del train_labels
-        K.clear_session()
         gc.collect()
 
     """Test the model"""
@@ -436,4 +495,5 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     shutil.rmtree("coronal_86_87_88")
     shutil.rmtree("sagittal_60_61_62")
     shutil.rmtree("axial_80_81_82")
+    K.clear_session()
     gc.collect()
