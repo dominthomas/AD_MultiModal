@@ -457,10 +457,10 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         """Set random seed for reproducibility"""
         tf.random.set_seed(129)
 
-        strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
+        #strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
 
-        with strategy.scope():
-            model = ResNet.build(227, 227, 1, 1, (3, 4, 6, 8), (32, 64, 128, 256, 512))
+        #with strategy.scope():
+        model = ResNet.build(227, 227, 1, 1, (3, 4, 6, 8), (32, 64, 128, 256, 512))
 
         model.compile(loss=tf.keras.losses.binary_crossentropy,
                       optimizer=tf.keras.optimizers.Adagrad(learning_rate=0.05),
@@ -469,7 +469,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         model.fit(train,
                   train_labels,
                   epochs=10,
-                  batch_size=256,
+                  batch_size=32,
                   shuffle=True)
         #################################################
 
