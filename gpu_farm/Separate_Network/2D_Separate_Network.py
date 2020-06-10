@@ -301,21 +301,23 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         """Retrieve AD Files"""
         print("Retrieving AD Train in the plane ", plane)
         os.chdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
-        pool = mp.Pool(32)
+        pool = mp.Pool(32, maxtasksperchild=1000)
         ad_train = pool.starmap(get_images, [([file], plane, slices, True, True) for file in ad_sub_train_files])
         pool.close()
         pool.join()
         del pool
+        gc.collect()
         ad_train = list(chain.from_iterable(ad_train))
 
         """Retrieve CN Files"""
         print("Retrieving CN Train in the plane ", plane)
         os.chdir("/home/k1651915/2D_MultiModal/OASIS3/CN/")
-        pool = mp.Pool(32)
+        pool = mp.Pool(32, maxtasksperchild=1000)
         cn_train = pool.starmap(get_images, [([file], plane, slices, True) for file in cn_sub_train_files])
         pool.close()
         pool.join()
         del pool
+        gc.collect()
         cn_train = list(chain.from_iterable(cn_train))
 
         train = np.asarray(cn_train + ad_train)
@@ -421,6 +423,7 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         model.save(model_file_name)
         del model
         del train
+        del train_labels
         K.clear_session()
         gc.collect()
 
@@ -433,3 +436,4 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
     shutil.rmtree("coronal_86_87_88")
     shutil.rmtree("sagittal_60_61_62")
     shutil.rmtree("axial_80_81_82")
+    gc.collect()
