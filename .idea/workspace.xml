@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f8c50649-df63-461f-9e4f-9c18e6a345fe" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/gpu_farm/ResNet/2D_Multi_ResNet.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gpu_farm/ResNet/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gpu_farm/Separate_Network/2D_Separate_Network.py" beforeDir="false" afterPath="$PROJECT_DIR$/gpu_farm/Separate_Network/2D_Separate_Network.py" afterDir="false" />
-    </list>
+    <list default="true" id="f8c50649-df63-461f-9e4f-9c18e6a345fe" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

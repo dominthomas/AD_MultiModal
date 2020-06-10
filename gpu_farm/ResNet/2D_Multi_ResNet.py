@@ -335,11 +335,6 @@ def test_model(ad_sub_test_files, cn_sub_test_files):
     #################################################
 
 
-"""Configure GPUs to prevent OOM errors"""
-gpus = tf.config.experimental.list_physical_devices('GPU')
-for gpu in gpus:
-    tf.config.experimental.set_memory_growth(gpu, True)
-
 """Retrieve AD & CN Filenames"""
 ad_files = os.listdir("/home/k1651915/2D_MultiModal/OASIS3/AD/")
 cn_files = os.listdir("/home/k1651915/2D_MultiModal/OASIS3/CN/")
@@ -454,22 +449,28 @@ for train_index_cn, test_index_cn in kf_cn_sub_id:
         gc.collect()
 
         #################################################
+        """Configure GPUs to prevent OOM errors"""
+        gpus = tf.config.experimental.list_physical_devices('GPU')
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+
         """Set random seed for reproducibility"""
         tf.random.set_seed(129)
 
-        model = ResNet.build(227, 227, 1, 1, (3, 4, 6, 8), (32, 64, 128, 256, 512))
+        strategy = tf.distribute.MirroredStrategy()
 
-        #################################################
+        with strategy.scope():
+            model = ResNet.build(227, 227, 1, 1, (3, 4, 6, 8), (32, 64, 128, 256, 512))
 
-        model.compile(loss=tf.keras.losses.binary_crossentropy,
-                      optimizer=tf.keras.optimizers.Adagrad(learning_rate=0.005),
-                      metrics=['accuracy'])
+            model.compile(loss=tf.keras.losses.binary_crossentropy,
+                          optimizer=tf.keras.optimizers.Adagrad(learning_rate=0.005),
+                          metrics=['accuracy'])
 
-        model.fit(train,
-                  train_labels,
-                  epochs=20,
-                  batch_size=256,
-                  shuffle=True)
+            model.fit(train,
+                      train_labels,
+                      epochs=20,
+                      batch_size=256,
+                      shuffle=True)
         #################################################
 
         model_file_name = "coronal_86_87_88"
